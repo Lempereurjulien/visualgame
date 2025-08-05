@@ -1,0 +1,4 @@
+name: visualGame
+version: '1.0-SNAPSHOT'
+main: org.julienLempereur.visualGame.VisualGame
+api-version: '1.21'
