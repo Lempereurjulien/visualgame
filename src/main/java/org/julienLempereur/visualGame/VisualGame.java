@@ -13,6 +13,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 public final class VisualGame extends JavaPlugin implements Listener {
@@ -29,6 +33,8 @@ public final class VisualGame extends JavaPlugin implements Listener {
             int amount
     ) {}
 
+    private ScheduledExecutorService scheduler;
+
     @Override
     public void onEnable() {
         // Plugin startup logic
@@ -37,6 +43,9 @@ public final class VisualGame extends JavaPlugin implements Listener {
             wsServer = new InventaireWebSocket(8887);
             wsServer.start();
             getLogger().info("✅ WebSocket démarré !");
+            scheduler = Executors.newScheduledThreadPool(1);
+            scheduler.scheduleAtFixedRate(() -> sendInventaireUpdate(),0,1, TimeUnit.SECONDS);
+
         }
         catch (Exception e){
             getLogger().severe("/////////////////FAILED :" + e.getMessage());
@@ -47,6 +56,9 @@ public final class VisualGame extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        if (scheduler != null && !scheduler.isShutdown()) {
+            scheduler.shutdown();
+        }
     }
 
     @Override
@@ -81,6 +93,11 @@ public final class VisualGame extends JavaPlugin implements Listener {
         }
     }
 
+
+
+
+
+    //EVENT Handler
     @EventHandler
     public void pickupItemEvent(EntityPickupItemEvent e){
         if(e.getEntity() instanceof Player player){
@@ -102,6 +119,7 @@ public final class VisualGame extends JavaPlugin implements Listener {
     public void blockBreakEvent(BlockBreakEvent e){
         sendInventaireUpdate();
     }
+
 
 }
 
