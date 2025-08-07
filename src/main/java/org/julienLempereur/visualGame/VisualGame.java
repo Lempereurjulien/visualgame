@@ -1,5 +1,8 @@
 package org.julienLempereur.visualGame;
+import com.destroystokyo.paper.event.player.PlayerConnectionCloseEvent;
 import com.google.gson.GsonBuilder;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,6 +12,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -22,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 public final class VisualGame extends JavaPlugin implements Listener {
 
     InventaireWebSocket wsServer;
+    private SparkService sparkService;
 
     public record PlayerInventory(
             String playerName,
@@ -37,6 +42,9 @@ public final class VisualGame extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        sparkService = new SparkService();
+        String uuid = UUID.randomUUID().toString().substring(0,4).toUpperCase();
+        CommonClass.getInstance().setUuid(uuid);
         // Plugin startup logic
         try{
             getServer().getPluginManager().registerEvents(this, this);
@@ -59,6 +67,7 @@ public final class VisualGame extends JavaPlugin implements Listener {
         if (scheduler != null && !scheduler.isShutdown()) {
             scheduler.shutdown();
         }
+        spark.Spark.stop();
     }
 
     @Override
@@ -93,10 +102,6 @@ public final class VisualGame extends JavaPlugin implements Listener {
         }
     }
 
-
-
-
-
     //EVENT Handler
     @EventHandler
     public void pickupItemEvent(EntityPickupItemEvent e){
@@ -118,6 +123,11 @@ public final class VisualGame extends JavaPlugin implements Listener {
     @EventHandler
     public void blockBreakEvent(BlockBreakEvent e){
         sendInventaireUpdate();
+    }
+
+    @EventHandler
+    public void playerConnect(PlayerJoinEvent e){
+        e.joinMessage(Component.text("code : " + CommonClass.getInstance().getUuid()).color(NamedTextColor.GREEN));
     }
 
 
