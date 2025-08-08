@@ -42,7 +42,7 @@ public final class VisualGame extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        sparkService = new SparkService();
+        sparkService = new SparkService(this);
         String uuid = UUID.randomUUID().toString().substring(0,4).toUpperCase();
         CommonClass.getInstance().setUuid(uuid);
         // Plugin startup logic
