@@ -1,4 +1,8 @@
 /home/lempereur/minecraft/pluginPerso/visualGame/src/main/java/org/julienLempereur/visualGame/CommonClass.java
-/home/lempereur/minecraft/pluginPerso/visualGame/src/main/java/org/julienLempereur/visualGame/InventaireWebSocket.java
 /home/lempereur/minecraft/pluginPerso/visualGame/src/main/java/org/julienLempereur/visualGame/SparkService.java
 /home/lempereur/minecraft/pluginPerso/visualGame/src/main/java/org/julienLempereur/visualGame/VisualGame.java
+/home/lempereur/minecraft/pluginPerso/visualGame/src/main/java/org/julienLempereur/visualGame/allClass/ItemClass.java
+/home/lempereur/minecraft/pluginPerso/visualGame/src/main/java/org/julienLempereur/visualGame/allClass/PlayerClass.java
+/home/lempereur/minecraft/pluginPerso/visualGame/src/main/java/org/julienLempereur/visualGame/services/PlayerService.java
+/home/lempereur/minecraft/pluginPerso/visualGame/src/main/java/org/julienLempereur/visualGame/websocket/InventaireWebSocket.java
+/home/lempereur/minecraft/pluginPerso/visualGame/src/main/java/org/julienLempereur/visualGame/websocket/WebSocketManager.java

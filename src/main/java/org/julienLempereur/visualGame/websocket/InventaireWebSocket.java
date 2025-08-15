@@ -1,7 +1,5 @@
-package org.julienLempereur.visualGame;
+package org.julienLempereur.visualGame.websocket;
 
-import org.eclipse.jetty.util.ajax.JSON;
-import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.server.WebSocketServer;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;

@@ -1,9 +1,6 @@
 package org.julienLempereur.visualGame;
-import com.destroystokyo.paper.event.player.PlayerConnectionCloseEvent;
-import com.google.gson.GsonBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,13 +8,13 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.julienLempereur.visualGame.services.PlayerService;
+import org.julienLempereur.visualGame.websocket.InventaireWebSocket;
+import org.julienLempereur.visualGame.websocket.WebSocketManager;
 
 import java.util.*;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -25,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 public final class VisualGame extends JavaPlugin implements Listener {
 
-    InventaireWebSocket wsServer;
+    private PlayerService playerService;
     private SparkService sparkService;
 
     public record PlayerInventory(
@@ -48,11 +45,10 @@ public final class VisualGame extends JavaPlugin implements Listener {
         // Plugin startup logic
         try{
             getServer().getPluginManager().registerEvents(this, this);
-            wsServer = new InventaireWebSocket(8887);
-            wsServer.start();
-            getLogger().info("✅ WebSocket démarré !");
+            WebSocketManager.init(8887);
+            PlayerService playerService = new PlayerService();
             scheduler = Executors.newScheduledThreadPool(1);
-            scheduler.scheduleAtFixedRate(() -> sendInventaireUpdate(),0,1, TimeUnit.SECONDS);
+            scheduler.scheduleAtFixedRate(() -> playerService.sendInventaireUpdate(),0,1, TimeUnit.SECONDS);
 
         }
         catch (Exception e){
@@ -75,60 +71,35 @@ public final class VisualGame extends JavaPlugin implements Listener {
         super.onLoad();
     }
 
-    public void sendInventaireUpdate(){
-
-        List<PlayerInventory> playerInventories = new ArrayList<>();
-
-        for(Player player : Bukkit.getOnlinePlayers()){
-            List<ItemSlot> itemSlots = new ArrayList<>();
-            for(ItemStack itemStack : player.getInventory().getContents()){
-                if(itemStack != null){
-                    ItemSlot itemSlot = new ItemSlot(itemStack.getType().toString(), itemStack.getAmount());
-                    itemSlots.add(itemSlot);
-                }
-            }
-            PlayerInventory playerInventory = new PlayerInventory(player.getName(),itemSlots);
-            playerInventories.add(playerInventory);
-        }
-        String json = new GsonBuilder()
-                .setPrettyPrinting()
-                .create()
-                .toJson(playerInventories);
-        if(wsServer !=null){
-            wsServer.broadcastMessage(json);
-        }
-        else{
-            getLogger().warning("! wsServer est null, brodcast ignoré");
-        }
-    }
 
     //EVENT Handler
     @EventHandler
     public void pickupItemEvent(EntityPickupItemEvent e){
         if(e.getEntity() instanceof Player player){
-            sendInventaireUpdate();
+            playerService.sendInventaireUpdate();
         }
     }
 
     @EventHandler
     public void inventoryClickEvent(InventoryClickEvent e){
-        sendInventaireUpdate();
+        playerService.sendInventaireUpdate();
     }
 
     @EventHandler
     public void craftItemEvent(CraftItemEvent e){
-        sendInventaireUpdate();
+        playerService.sendInventaireUpdate();
     }
 
     @EventHandler
     public void blockBreakEvent(BlockBreakEvent e){
-        sendInventaireUpdate();
+        playerService.sendInventaireUpdate();
     }
 
     @EventHandler
     public void playerConnect(PlayerJoinEvent e){
         e.joinMessage(Component.text("code : " + CommonClass.getInstance().getUuid()).color(NamedTextColor.GREEN));
     }
+
 
 
 }

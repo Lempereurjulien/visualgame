@@ -1,6 +1,10 @@
+org/julienLempereur/visualGame/allClass/PlayerClass.class
+org/julienLempereur/visualGame/services/PlayerService.class
 org/julienLempereur/visualGame/VisualGame$ItemSlot.class
 org/julienLempereur/visualGame/VisualGame$PlayerInventory.class
 org/julienLempereur/visualGame/SparkService.class
-org/julienLempereur/visualGame/InventaireWebSocket.class
+org/julienLempereur/visualGame/websocket/WebSocketManager.class
 org/julienLempereur/visualGame/VisualGame.class
+org/julienLempereur/visualGame/allClass/ItemClass.class
 org/julienLempereur/visualGame/CommonClass.class
+org/julienLempereur/visualGame/websocket/InventaireWebSocket.class
