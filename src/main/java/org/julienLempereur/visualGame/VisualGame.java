@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -98,6 +99,11 @@ public final class VisualGame extends JavaPlugin implements Listener {
     @EventHandler
     public void playerConnect(PlayerJoinEvent e){
         e.joinMessage(Component.text("code : " + CommonClass.getInstance().getUuid()).color(NamedTextColor.GREEN));
+    }
+
+    @EventHandler
+    public void playerDie(PlayerDeathEvent e){
+
     }
 
 
