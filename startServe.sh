@@ -2,7 +2,7 @@
 
 # 1. Exécuter la commande Maven pour compiler
 
-DEST_PATH="/home/lempereur/minecraft/server/"
+DEST_PATH="/home/lempereur/Documents/Projets/minecraft/visualgame-server/"
 
 # 1 lancement du server
 cd "$DEST_PATH"

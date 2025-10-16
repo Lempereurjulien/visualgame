@@ -11,8 +11,7 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.julienLempereur.visualGame.services.PlayerService;
-import org.julienLempereur.visualGame.websocket.InventaireWebSocket;
+import org.julienLempereur.visualGame.services.PlayerServiceImpl;
 import org.julienLempereur.visualGame.websocket.WebSocketManager;
 
 import java.util.*;
@@ -23,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 public final class VisualGame extends JavaPlugin implements Listener {
 
-    private PlayerService playerService;
+    private PlayerServiceImpl playerService;
     private SparkService sparkService;
 
     public record PlayerInventory(
@@ -47,7 +46,7 @@ public final class VisualGame extends JavaPlugin implements Listener {
         try{
             getServer().getPluginManager().registerEvents(this, this);
             WebSocketManager.init(8887);
-            PlayerService playerService = new PlayerService();
+            PlayerServiceImpl playerService = new PlayerServiceImpl();
             scheduler = Executors.newScheduledThreadPool(1);
             scheduler.scheduleAtFixedRate(() -> playerService.sendInventaireUpdate(),0,1, TimeUnit.SECONDS);
 

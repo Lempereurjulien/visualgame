@@ -1,4 +1,4 @@
-package org.julienLempereur.visualGame.allClass;
+package org.julienLempereur.visualGame.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ItemClass {
+public class ItemModel {
     private String name;
     private int amount;
 }

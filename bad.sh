@@ -12,7 +12,7 @@ fi
 
 # 3. Définir les chemins
 JAR_PATH="target/visualGame-1.0-SNAPSHOT.jar"
-DEST_PATH="/home/lempereur/minecraft/server/"
+DEST_PATH="/home/lempereur/Documents/Projets/minecraft/visualgame-server/"
 
 # 4. Vérifier si le fichier jar existe
 if [ ! -f "$JAR_PATH" ]; then

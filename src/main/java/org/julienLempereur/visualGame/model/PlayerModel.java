@@ -1,4 +1,4 @@
-package org.julienLempereur.visualGame.allClass;
+package org.julienLempereur.visualGame.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,17 +10,17 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PlayerClass {
+public class PlayerModel {
 
     String name;
     Boolean status;
-    List<ItemClass> items = new ArrayList<>();
+    List<ItemModel> items = new ArrayList<>();
 
-    public void addItem(ItemClass item){
+    public void addItem(ItemModel item){
         items.add(item);
     }
 
-    public void addItemSlots(List<ItemClass> itemsSlots){
+    public void addItemSlots(List<ItemModel> itemsSlots){
         this.items = itemsSlots;
     }
 }
