@@ -29,7 +29,7 @@ public final class VisualGame extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        sparkService = new SparkService(this);
+        sparkService = new SparkService();
         String uuid = UUID.randomUUID().toString().substring(0,4).toUpperCase();
         CommonClass.getInstance().setUuid(uuid);
         getServer().getPluginManager().registerEvents(this, this);
@@ -39,9 +39,7 @@ public final class VisualGame extends JavaPlugin implements Listener {
         scheduler = Executors.newScheduledThreadPool(1);
             scheduler.scheduleAtFixedRate(() -> {
                 try {
-                    WebSocketManager.getInstance().broadCastMessage("teste");
-                    List<PlayerModel> players = playerService.sendInventaireUpdate();
-                    WebSocketManager.getInstance().broadCastAllPlayers(players);
+                    WebSocketManager.getInstance().broadCastAllPlayers(playerService.sendInventaireUpdate());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

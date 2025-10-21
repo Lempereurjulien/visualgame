@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.units.qual.C;
 import org.julienLempereur.visualGame.services.PlayerService;
+import org.julienLempereur.visualGame.services.PlayerServiceImpl;
 //import org.julienLempereur.visualGame.services.PlayerServiceImpl;
 
 import java.util.HashMap;
@@ -16,9 +17,9 @@ import java.util.Objects;
 
 public class SparkService {
 
-//    PlayerService playerService = new PlayerServiceImpl();
+    PlayerService playerService = new PlayerServiceImpl();
     private final Gson gson = new Gson();
-    public SparkService(VisualGame plugin){
+    public SparkService(){
     port(4567);
 
     enableCORS("*","*","*");
@@ -44,12 +45,11 @@ public class SparkService {
         res.type("application/json");
         Map<String, String> body = gson.fromJson(req.body(), Map.class);
         String playerName = body.get("namePlayer");
-        Map<String, Object> response = new HashMap<>();
         if (playerName == null || playerName.isEmpty()) {
             res.status(400);
             return "Nom du joueur manquant";
         }
-//        playerService.addStarterPack(plugin, playerName);
+        playerService.addStarterPack(playerName);
         res.status(200);
         return "OK";
     });

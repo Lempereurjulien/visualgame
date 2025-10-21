@@ -1,8 +1,10 @@
 package org.julienLempereur.visualGame.services;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.julienLempereur.visualGame.VisualGame;
 import org.julienLempereur.visualGame.model.ItemModel;
 import org.julienLempereur.visualGame.model.PlayerModel;
@@ -24,8 +26,18 @@ public class PlayerServiceImpl implements PlayerService{
     }
 
     @Override
-    public void addStarterPack(VisualGame plugin, String playerName) {
-
+    public void addStarterPack(String playerName) throws Exception {
+    Player player = Bukkit.getPlayer(playerName);
+    if(player !=null){
+        player.getInventory().clear();
+        player.getInventory().addItem(new ItemStack(Material.CRAFTING_TABLE, 1));
+        player.getInventory().addItem(new ItemStack(Material.OAK_PLANKS, 20));
+        player.getInventory().addItem(new ItemStack(Material.STONE_AXE, 1));
+        player.getInventory().addItem(new ItemStack(Material.STONE_PICKAXE, 1));
+    }
+    else{
+        throw new Exception("Player not found");
+    }
     }
 
     private List<ItemModel> getItemByPlayer(Player player){

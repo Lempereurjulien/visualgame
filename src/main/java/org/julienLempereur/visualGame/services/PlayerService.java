@@ -9,6 +9,6 @@ import java.util.List;
 public interface PlayerService {
     List<PlayerModel> sendInventaireUpdate();
 
-    void addStarterPack(VisualGame plugin, String playerName);
+    void addStarterPack(String playerName) throws Exception;
 
 }
