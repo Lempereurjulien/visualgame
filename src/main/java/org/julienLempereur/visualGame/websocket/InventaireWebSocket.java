@@ -1,11 +1,14 @@
 package org.julienLempereur.visualGame.websocket;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import org.julienLempereur.visualGame.model.PlayerModel;
 
 import java.net.InetSocketAddress;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class InventaireWebSocket extends WebSocketServer {
@@ -19,7 +22,9 @@ public class InventaireWebSocket extends WebSocketServer {
     @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
     connections.add(webSocket);
-    webSocket.send("connected");
+//        Map<String, String> response = new HashMap<>();
+//        response.put("message", "connected");
+//    webSocket.send(new Gson().toJson(response));
     System.out.println("Client connected" + webSocket.getRemoteSocketAddress());
     }
 
@@ -44,15 +49,36 @@ public class InventaireWebSocket extends WebSocketServer {
         System.out.println("WebSocket server started successfully!");
     }
 
-    public void broadCast(String message){
+    public void broadCastAllPlayers(List<PlayerModel> players) {
+        //Envoie tous les joueurs en les transformant en Json
+        System.out.println("Connexions actives : " + players);
+        String json = new GsonBuilder()
+                .setPrettyPrinting()
+                .create()
+                .toJson(players);
+        Map<String, String> response = new HashMap<>();
+        response.put("players", json);
+        broadCast(response);
+    }
+
+    public void broadCastMessage(String message){
+        Map<String, String> response = new HashMap<>();
+        response.put("message", message);
+        this.broadCast(response);
+
+    }
+
+    /// Envoie le broadCast générale
+    private void broadCast(Map<String, String> mapResponse){
+        if (connections.isEmpty()) {
+            System.out.println("⚠️ Aucun client connecté, message ignoré");
+            return;
+        }
         for(WebSocket conn : connections){
             if(conn.isOpen()){
-                conn.send(message);
+                conn.send(new Gson().toJson(mapResponse));
             }
         }
     }
 
-    public void broadCastMessage(String message){
-        this.broadCastMessage(message);
-    }
 }

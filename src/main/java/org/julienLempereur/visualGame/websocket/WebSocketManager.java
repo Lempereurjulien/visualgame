@@ -40,4 +40,8 @@ public class WebSocketManager {
         }
         return wsServer;
     }
+
+//    public static String objectToJson(<T> object){
+//
+//    }
 }

@@ -2,9 +2,12 @@ package org.julienLempereur.visualGame.services;
 
 import org.bukkit.entity.Player;
 import org.julienLempereur.visualGame.VisualGame;
+import org.julienLempereur.visualGame.model.PlayerModel;
+
+import java.util.List;
 
 public interface PlayerService {
-    void sendInventaireUpdate();
+    List<PlayerModel> sendInventaireUpdate();
 
     void addStarterPack(VisualGame plugin, String playerName);
 
