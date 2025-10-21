@@ -7,12 +7,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.units.qual.C;
+import org.julienLempereur.visualGame.services.PlayerService;
+//import org.julienLempereur.visualGame.services.PlayerServiceImpl;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class SparkService {
 
+//    PlayerService playerService = new PlayerServiceImpl();
     private final Gson gson = new Gson();
     public SparkService(VisualGame plugin){
     port(4567);
@@ -45,20 +49,7 @@ public class SparkService {
             res.status(400);
             return "Nom du joueur manquant";
         }
-        Bukkit.getScheduler().runTask(plugin, () ->{
-            Player target = Bukkit.getPlayerExact(playerName);
-            if(target != null){
-                target.getInventory().clear();
-                target.getInventory().addItem(new ItemStack(Material.CRAFTING_TABLE, 1));
-                target.getInventory().addItem(new ItemStack(Material.OAK_PLANKS, 20));
-                target.getInventory().addItem(new ItemStack(Material.STONE_AXE, 1));
-                target.getInventory().addItem(new ItemStack(Material.STONE_PICKAXE, 1));
-                plugin.getLogger().info("✅ Items donnés à " + playerName);
-            }
-            else {
-                plugin.getLogger().warning("❌ Joueur introuvable : " + playerName);
-            }
-        });
+//        playerService.addStarterPack(plugin, playerName);
         res.status(200);
         return "OK";
     });

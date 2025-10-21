@@ -1,14 +1,16 @@
 package org.julienLempereur.visualGame.websocket;
 
-import org.java_websocket.server.WebSocketServer;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
+import org.java_websocket.server.WebSocketServer;
+
 import java.net.InetSocketAddress;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class InventaireWebSocket extends WebSocketServer {
 
-    private final Set<WebSocket> clients = new HashSet<>();
+    private final Set<WebSocket> connections = ConcurrentHashMap.newKeySet();
 
     public InventaireWebSocket(int port){
         super(new InetSocketAddress(port));
@@ -16,41 +18,41 @@ public class InventaireWebSocket extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
-        clients.add(webSocket);
+    connections.add(webSocket);
+    webSocket.send("connected");
+    System.out.println("Client connected" + webSocket.getRemoteSocketAddress());
     }
 
     @Override
     public void onClose(WebSocket webSocket, int i, String s, boolean b) {
-
+        connections.remove(webSocket);
+        System.out.println("Client disconnected" + webSocket.getRemoteSocketAddress());
     }
 
     @Override
-    public void onMessage(WebSocket webSocket, String s) {
-
+    public void onMessage(WebSocket webSocket, String message) {
+        System.out.println("Received message" + message);
     }
 
     @Override
     public void onError(WebSocket webSocket, Exception e) {
-
+    e.printStackTrace();
     }
 
-    public void broadcastMessage(String message){
+    @Override
+    public void onStart() {
+        System.out.println("WebSocket server started successfully!");
+    }
 
-        if (getConnections().isEmpty()) {
-            System.out.println("❌ Aucun client WebSocket connecté.");
-            return;
-        }
-
-        for (WebSocket conn : getConnections()) {
-            if (conn.isOpen()) {
+    public void broadCast(String message){
+        for(WebSocket conn : connections){
+            if(conn.isOpen()){
                 conn.send(message);
             }
         }
     }
 
-    @Override
-    public void onStart() {
-    System.out.println("Websocket démarré !");
+    public void broadCastMessage(String message){
+        this.broadCastMessage(message);
     }
 }
-
