@@ -11,7 +11,7 @@ exit 1
 fi
 
 # 3. Définir les chemins
-JAR_PATH="target/visualGame-1.0-SNAPSHOT.jar"
+JAR_PATH="target/visualGame-1.0.0.jar"
 DEST_PATH="/home/lempereur/Documents/Projets/minecraft/visualgame-server/"
 
 # 4. Vérifier si le fichier jar existe
