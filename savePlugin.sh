@@ -1,4 +1,4 @@
-!#bin/bash
+#!/bin/bash
 
 pluginVersion="1.0.0"
 #1. Copier target *.jar dans minecraft-server/plugins
