@@ -1,5 +1,6 @@
 package org.julienLempereur.visualGame;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -9,6 +10,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.julienLempereur.visualGame.model.PlayerModel;
+import org.julienLempereur.visualGame.services.MapService;
+import org.julienLempereur.visualGame.services.MapServiceImpl;
 import org.julienLempereur.visualGame.services.PlayerService;
 import org.julienLempereur.visualGame.services.PlayerServiceImpl;
 import org.julienLempereur.visualGame.websocket.WebSocketManager;
@@ -26,9 +29,13 @@ public final class VisualGame extends JavaPlugin implements Listener {
 //    private PlayerServiceImpl playerService;
     private SparkService sparkService;
     private ScheduledExecutorService scheduler;
+    @Getter
+    private static VisualGame instance;
+
 
     @Override
     public void onEnable() {
+        instance = this;
         sparkService = new SparkService();
         String uuid = UUID.randomUUID().toString().substring(0,4).toUpperCase();
         CommonClass.getInstance().setUuid(uuid);
@@ -36,10 +43,13 @@ public final class VisualGame extends JavaPlugin implements Listener {
         try{
             WebSocketManager.start(8887);
         PlayerService playerService = new PlayerServiceImpl();
+        MapService mapService = new MapServiceImpl();
+
         scheduler = Executors.newScheduledThreadPool(1);
             scheduler.scheduleAtFixedRate(() -> {
                 try {
                     WebSocketManager.getInstance().broadCastAllPlayers(playerService.sendInventaireUpdate());
+                    WebSocketManager.getInstance().broadCastMap(mapService.sendMapUpdate());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -49,6 +59,7 @@ public final class VisualGame extends JavaPlugin implements Listener {
             getLogger().severe("/////////////////FAILED :" + e.getMessage());
             e.printStackTrace();
         }
+
     }
 
     @Override

@@ -2,9 +2,11 @@ package org.julienLempereur.visualGame.websocket;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import org.julienLempereur.visualGame.model.MapModel;
 import org.julienLempereur.visualGame.model.PlayerModel;
 
 import java.net.InetSocketAddress;
@@ -22,9 +24,6 @@ public class InventaireWebSocket extends WebSocketServer {
     @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
     connections.add(webSocket);
-//        Map<String, String> response = new HashMap<>();
-//        response.put("message", "connected");
-//    webSocket.send(new Gson().toJson(response));
     System.out.println("Client connected" + webSocket.getRemoteSocketAddress());
     }
 
@@ -49,36 +48,42 @@ public class InventaireWebSocket extends WebSocketServer {
         System.out.println("WebSocket server started successfully!");
     }
 
-    public void broadCastAllPlayers(List<PlayerModel> players) {
-        //Envoie tous les joueurs en les transformant en Json
-        System.out.println("Connexions actives : " + players);
-        String json = new GsonBuilder()
-                .setPrettyPrinting()
-                .create()
-                .toJson(players);
-        Map<String, String> response = new HashMap<>();
-        response.put("players", json);
-        broadCast(response);
-    }
-
-    public void broadCastMessage(String message){
-        Map<String, String> response = new HashMap<>();
-        response.put("message", message);
-        this.broadCast(response);
-
-    }
-
     /// Envoie le broadCast générale
-    private void broadCast(Map<String, String> mapResponse){
+    private void broadCast(String mapResponse){
         if (connections.isEmpty()) {
             System.out.println("⚠️ Aucun client connecté, message ignoré");
             return;
         }
         for(WebSocket conn : connections){
             if(conn.isOpen()){
-                conn.send(new Gson().toJson(mapResponse));
+                conn.send(mapResponse);
             }
         }
+    }
+
+//BroadCast Métier
+    public void broadCastAllPlayers(List<PlayerModel> players) {
+        //Envoie tous les joueurs en les transformant en Json
+        System.out.println("Connexions actives : " + players);
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .create();
+
+        JsonObject response = new JsonObject();
+        response.addProperty("type", "players");
+        response.add("data", gson.toJsonTree(players));
+        broadCast(response.toString());
+    }
+
+    public void broadCastMap(MapModel map){
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .create();
+
+        JsonObject response = new JsonObject();
+        response.addProperty("type", "map");
+        response.add("data", gson.toJsonTree(map));
+        broadCast(response.toString());
     }
 
 }
