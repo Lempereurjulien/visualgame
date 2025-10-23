@@ -16,36 +16,33 @@ import org.julienLempereur.visualGame.services.PlayerService;
 import org.julienLempereur.visualGame.services.PlayerServiceImpl;
 import org.julienLempereur.visualGame.websocket.WebSocketManager;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-
 public final class VisualGame extends JavaPlugin implements Listener {
 
-//    private PlayerServiceImpl playerService;
+    //    private PlayerServiceImpl playerService;
     private SparkService sparkService;
     private ScheduledExecutorService scheduler;
     @Getter
-    private static VisualGame instance;
+    public static VisualGame instance;
+    private PlayerService playerService = new PlayerServiceImpl();
+
+
 
 
     @Override
     public void onEnable() {
         instance = this;
         sparkService = new SparkService();
-        String uuid = UUID.randomUUID().toString().substring(0,4).toUpperCase();
-        CommonClass.getInstance().setUuid(uuid);
         getServer().getPluginManager().registerEvents(this, this);
-        try{
+        try {
             WebSocketManager.start(8887);
-        PlayerService playerService = new PlayerServiceImpl();
-        MapService mapService = new MapServiceImpl();
+            MapService mapService = new MapServiceImpl();
 
-        scheduler = Executors.newScheduledThreadPool(1);
+            scheduler = Executors.newScheduledThreadPool(1);
             scheduler.scheduleAtFixedRate(() -> {
                 try {
                     WebSocketManager.getInstance().broadCastAllPlayers(playerService.sendInventaireUpdate());
@@ -54,8 +51,7 @@ public final class VisualGame extends JavaPlugin implements Listener {
                     e.printStackTrace();
                 }
             }, 1000, 1000, TimeUnit.MILLISECONDS);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             getLogger().severe("/////////////////FAILED :" + e.getMessage());
             e.printStackTrace();
         }
@@ -78,12 +74,18 @@ public final class VisualGame extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void playerConnect(PlayerJoinEvent e){
-        e.joinMessage(Component.text("code : " + CommonClass.getInstance().getUuid()).color(NamedTextColor.GREEN));
+    public void playerConnect(PlayerJoinEvent e) {
+        Map<String, String> map = new HashMap<>();
+        String code = UUID.randomUUID().toString().substring(0, 4).toUpperCase();
+        PlayerModel player = playerService.dtoPlayerToPlayerModel(e.getPlayer());
+        e.getPlayer().sendMessage(Component.text("code : " + code).color(NamedTextColor.GREEN));
+        map.put(code, player.getName());
+        List<Map<String, String>> playersStock = CommonClass.getInstance().getPlayersStock();
+        playersStock.add(map);
     }
 
     @EventHandler
-    public void playerDie(PlayerDeathEvent e){
+    public void playerDie(PlayerDeathEvent e) {
     }
 
 

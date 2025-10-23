@@ -40,6 +40,10 @@ public class PlayerServiceImpl implements PlayerService{
     }
     }
 
+    public PlayerModel dtoPlayerToPlayerModel(Player player){
+        return new PlayerModel(player.getName(), !player.isDead(), getItemByPlayer(player));
+    }
+
     private List<ItemModel> getItemByPlayer(Player player){
         List<ItemModel> listItem = new ArrayList<>();
         Arrays.stream(Objects.requireNonNull(player.getInventory().getContents()))

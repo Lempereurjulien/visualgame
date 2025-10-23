@@ -64,7 +64,6 @@ public class InventaireWebSocket extends WebSocketServer {
 //BroadCast Métier
     public void broadCastAllPlayers(List<PlayerModel> players) {
         //Envoie tous les joueurs en les transformant en Json
-        System.out.println("Connexions actives : " + players);
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .create();

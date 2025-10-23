@@ -29,7 +29,7 @@ public class SparkService {
         Map<String, String> body = gson.fromJson(request.body(), Map.class);
         String uuidSend = body.get("uuid");
         Map<String, Object> response = new HashMap<>();
-        if(Objects.equals(uuidSend, CommonClass.getInstance().getUuid())){
+        if(CommonClass.getInstance().verifCode(uuidSend)){
             response.put("response", true);
         }
         else{

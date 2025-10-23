@@ -11,4 +11,5 @@ public interface PlayerService {
 
     void addStarterPack(String playerName) throws Exception;
 
+    PlayerModel dtoPlayerToPlayerModel(Player player);
 }
